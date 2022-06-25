@@ -17,8 +17,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -108,6 +106,17 @@ class ProductControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
+    @Test
+    @DisplayName("findAll Product")
+    void findAll() throws Exception {
+
+        productService.findAll();
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/products")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
 
     @Test
     @DisplayName("delete Product")
@@ -131,14 +140,6 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.price")
                         .value(product.getPrice()));
     }
-
-
-
-
-
-
-
-
 
 
 }
