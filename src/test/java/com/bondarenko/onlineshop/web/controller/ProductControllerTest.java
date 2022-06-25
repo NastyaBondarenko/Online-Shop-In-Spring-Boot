@@ -17,6 +17,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.springframework.test.util.AssertionErrors.assertNotNull;
+import static org.springframework.test.util.AssertionErrors.assertNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -74,7 +76,7 @@ class ProductControllerTest {
                 .creationDate(LocalDateTime.now())
                 .build();
 
-        productService.update(1, inputProduct);
+//        productService.update(1, inputProduct);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/products/update/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +91,7 @@ class ProductControllerTest {
     @Test
     @DisplayName("find Product By Id ")
     void findById() throws Exception {
-        productService.findById(1);
+//        productService.findById(1);
         mockMvc.perform(MockMvcRequestBuilders.get("/products/1")
                         .contentType(MediaType.APPLICATION_JSON)
                 )
@@ -99,7 +101,7 @@ class ProductControllerTest {
     @Test
     @DisplayName("search Product")
     void searchProduct() throws Exception {
-        productService.findProductByName("TV");
+//        productService.findProductByName("TV");
 
         mockMvc.perform(MockMvcRequestBuilders.get("/products/search/TV")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -110,8 +112,6 @@ class ProductControllerTest {
     @DisplayName("findAll Product")
     void findAll() throws Exception {
 
-        productService.findAll();
-
         mockMvc.perform(MockMvcRequestBuilders.get("/products")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -121,7 +121,7 @@ class ProductControllerTest {
     @Test
     @DisplayName("delete Product")
     void deleteProduct() throws Exception {
-        productService.delete(1);
+//        productService.delete(1);
         mockMvc.perform(MockMvcRequestBuilders.delete("/products/delete/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
