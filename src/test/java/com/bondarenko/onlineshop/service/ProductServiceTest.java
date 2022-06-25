@@ -142,5 +142,36 @@ class ProductServiceTest {
         assertThat(deletedProduct).isEmpty();
     }
 
+    @Test
+    @DisplayName("when Search Product By Name then Quantity Of Searched Products Correct")
+    public void whenSearchProductsByName_thenQuantityOfSearchedProductsCorrect() {
+
+        List<Product> listOfSearchedProducts = productRepository.findProductByNameIgnoreCase("TV");
+
+        assertEquals(2, listOfSearchedProducts.size());
+    }
+
+    @Test
+    @DisplayName("when Search Products By Name then Appropriate Product Return")
+    public void whenSearchProductsByName_thenAppropriateProductReturn() {
+
+        List<Product> listOfSearchedProducts = productRepository.findProductByNameIgnoreCase("TV");
+
+        assertEquals("TV",savedProduct.getName());
+        assertTrue(listOfSearchedProducts.contains(savedProduct));
+
+        assertEquals("TV",searchedProduct.getName());
+        assertTrue(listOfSearchedProducts.contains(searchedProduct));
+    }
+
+    @Test
+    @DisplayName("when Search By Name Not Existing Product then List Of Searched Products is Empty")
+    public void whenSearchByName_NotExistingProduct_thenListOfSearchedProducts_isEmpty() {
+
+        List<Product> listOfSearchedProducts = productRepository.findProductByNameIgnoreCase("boll");
+
+        listOfSearchedProducts.isEmpty();
+    }
+
 
 }
