@@ -59,7 +59,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product findProductByName(String name) {
-        return productRepository.findProductByName(name);
+        return productRepository.findProductByNameIgnoreCase(name);
     }
 //    @Override
 //    public Product search(String name) {
