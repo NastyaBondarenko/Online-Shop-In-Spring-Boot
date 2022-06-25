@@ -56,12 +56,11 @@ class ProductServiceTest {
         assertNotNull(savedProduct);
         assertEquals("TV", savedProduct.getName());
         assertEquals(3000, savedProduct.getPrice());
-        assertEquals(6, savedProduct.getId());
     }
 
     @Test
     @DisplayName("when Save Product then Saved Product is Not Null")
-    public void whenSaveProduct_thenSavedProduct_isNotNull() {
+    public void whenSaveProduct_thenSavedProductIsNotNull() {
         product = Product.builder()
                 .id(2)
                 .name("TV")
@@ -86,18 +85,18 @@ class ProductServiceTest {
         assertThat(productList.size()).isEqualTo(2);
     }
 
-    @DisplayName("given Saved Product when FindById then Searched Product is Not Null")
+    @DisplayName("when FindById then Searched Product is Not Null")
     @Test
-    public void givenSavedProduct_whenFindById_thenSearchedProduct_isNotNull() {
+    public void whenFindById_thenSearchedProduct_isNotNull() {
 
         Optional<Product> product = productRepository.findById(1);
 
         assertNotNull(product);
     }
 
-    @DisplayName("given Saved Product when Update Product then Return Updated Product")
+    @DisplayName("when Update Product then Return Updated Product")
     @Test
-    public void givenSavedProduct_whenUpdateProduct_thenReturnUpdatedProduct() {
+    public void whenUpdateProduct_thenReturnUpdatedProduct() {
 
         Product actualProduct = productRepository.findById(searchedProduct.getId()).get();
         actualProduct.setName("snowboard");
@@ -106,6 +105,23 @@ class ProductServiceTest {
 
         assertEquals(5000, updatedProduct.getPrice());
         assertEquals("snowboard", updatedProduct.getName());
+    }
+
+    @DisplayName("when Delete Product then Removed Product is Empty")
+    @Test
+    public void whenDeleteProduct_thenRemovedProduct_isEmpty(){
+      Product newProduct = Product.builder()
+              .id(3)
+                .name("board")
+                .price(9000)
+                .creationDate(LocalDateTime.now())
+                .build();
+
+       Product savedNewProduct = productRepository.save(newProduct);
+        productRepository.deleteById(savedNewProduct.getId());
+        Optional<Product> deletedProduct = productRepository.findById(3);
+
+        assertThat(deletedProduct).isEmpty();
     }
 
 
