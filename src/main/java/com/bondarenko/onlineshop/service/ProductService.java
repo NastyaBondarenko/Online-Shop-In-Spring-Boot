@@ -18,6 +18,12 @@ public interface ProductService {
 
     //
     Product update(int id, Product product);
+
+    Product findProductByName(String name);
 //
 //    List<Product> search(String searchText);
+
+//    public Product search(String name);
+
+
 }

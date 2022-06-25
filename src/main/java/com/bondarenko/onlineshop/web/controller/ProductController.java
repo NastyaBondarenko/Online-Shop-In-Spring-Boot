@@ -50,7 +50,29 @@ public class ProductController {
                           @RequestBody Product product) {
         return productService.update(id, product);
     }
+
+    @GetMapping("/products/search/{name}")
+public Product search(@PathVariable("name") String name){
+        return productService.findProductByName(name);
+    }
+
+
+
 }
+
+//    @GetMapping("/products/search/{name}")
+//    public Product search(@PathVariable("name") String searchText) {
+//        return productService.search(searchText);
+//    }
+
+
+//    @GetMapping("/products/search/{name}")
+//    public List<Product> search(@PathVariable("name") String searchText) {
+//        logger.info("search product {}", searchText);
+//        return productService.search(searchText);
+//    }
+
+
 //
 //    @GetMapping("/products/search/{name}")
 //    public List<Product> search(@PathVariable("name") String searchText) {
