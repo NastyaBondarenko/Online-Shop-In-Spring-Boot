@@ -32,13 +32,13 @@ public class ProductController {
         logger.info("add product {}", product);
         productService.add(product);
     }
-//
-//    @DeleteMapping("/products/delete/{id}")
-//    public void delete(@PathVariable("id") int id) {
-//        logger.info("delete product by id {}", id);
-//        productServiceImpl.delete(id);
-//    }
-//
+
+    @DeleteMapping("/products/delete/{id}")
+    public void delete(@PathVariable("id") int id) {
+        logger.info("delete product by id {}", id);
+        productService.delete(id);
+    }
+
     @GetMapping("/products/{id}")
     public Optional<Product> findById(@PathVariable("id") int id) {
         logger.info("find product by id {}", id);

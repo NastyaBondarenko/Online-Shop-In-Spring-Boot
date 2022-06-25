@@ -12,7 +12,7 @@ public interface ProductService {
 //
     Optional<Product> findById(int id);
 //
-//    void delete(int id);
+    void delete(int id);
 //
 //    String update(Product product);
 //

@@ -26,13 +26,13 @@ public class ProductServiceImpl implements ProductService {
         product.setCreationDate(LocalDateTime.now());
         productRepository.save(product);
     }
-//
-//    @Override
-//    public void delete(int id) {
-//        productRepository.deleteById(id);
-//    }
-//
-//
+
+    @Override
+    public void delete(int id) {
+        productRepository.deleteById(id);
+    }
+
+
     @Override
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
