@@ -13,8 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 class ProductServiceTest {
@@ -36,7 +35,7 @@ class ProductServiceTest {
                         .creationDate(LocalDateTime.now())
                         .build();
 
-         searchedProduct = Product.builder()
+        searchedProduct = Product.builder()
                 .id(2)
                 .name("TV")
                 .price(10000)
@@ -52,8 +51,6 @@ class ProductServiceTest {
     @Test
     @DisplayName("when Save Product then Correct Product Parameters Return")
     public void whenSaveProduct_thenCorrectProductParametersReturn() {
-
-        assertNotNull(savedProduct);
         assertEquals("TV", savedProduct.getName());
         assertEquals(3000, savedProduct.getPrice());
     }
@@ -61,15 +58,6 @@ class ProductServiceTest {
     @Test
     @DisplayName("when Save Product then Saved Product is Not Null")
     public void whenSaveProduct_thenSavedProductIsNotNull() {
-        product = Product.builder()
-                .id(2)
-                .name("TV")
-                .price(3000)
-                .creationDate(LocalDateTime.now())
-                .build();
-
-        Product savedProduct = productRepository.save(product);
-
         assertNotNull(savedProduct);
         assertNotNull(savedProduct.getName());
         assertNotNull(savedProduct.getPrice());
@@ -80,44 +68,74 @@ class ProductServiceTest {
     @Test
     public void whenFindAll_thenCorrectQuantityOfProducts_Return() {
         List<Product> productList = productRepository.findAll();
-
-        assertThat(productList).isNotNull();
-        assertThat(productList.size()).isEqualTo(2);
+        assertEquals(2, productList.size());
     }
 
-    @DisplayName("when FindById then Searched Product is Not Null")
     @Test
-    public void whenFindById_thenSearchedProduct_isNotNull() {
+    @DisplayName("when FindAll then All Elements Contains Of List")
+    public void whenFindAll_thenAllElementsContainsOfList() {
+        List<Product> productList = productRepository.findAll();
 
-        Optional<Product> product = productRepository.findById(1);
-
-        assertNotNull(product);
+        assertNotNull(productList);
+        assertTrue(productList.contains(savedProduct));
+        assertTrue(productList.contains(searchedProduct));
     }
 
+    @Test
+    @DisplayName("when FindById Existing Product then Searched Product is Not Null")
+    public void whenFindById_ExistingProduct_thenSearchedProduct_isNotNull() {
+
+        Optional<Product> existingProduct = productRepository.findById(1);
+        assertNotNull(existingProduct);
+    }
+
+    @Test
+    @DisplayName("when FindById Not Existing Product then Searched Product is Empty")
+    public void whenFindById_NotExistingProduct_thenSearchedProduct_isEmpty() {
+        Optional<Product> notExistingProduct = productRepository.findById(101);
+        assertThat(notExistingProduct).isEmpty();
+    }
+
+    @Test
     @DisplayName("when Update Product then Return Updated Product")
-    @Test
-    public void whenUpdateProduct_thenReturnUpdatedProduct() {
-
+    public void whenUpdateProduct_thenUpdatedProductReturn() {
         Product actualProduct = productRepository.findById(searchedProduct.getId()).get();
+
         actualProduct.setName("snowboard");
         actualProduct.setPrice(5000);
+
         Product updatedProduct = productRepository.save(actualProduct);
 
         assertEquals(5000, updatedProduct.getPrice());
         assertEquals("snowboard", updatedProduct.getName());
     }
 
-    @DisplayName("when Delete Product then Removed Product is Empty")
     @Test
-    public void whenDeleteProduct_thenRemovedProduct_isEmpty(){
-      Product newProduct = Product.builder()
-              .id(3)
+    @DisplayName("when Update Product then Quantity Of Products Does Not Changes")
+    public void whenUpdateProduct_thenQuantityOfProducts_DoesNotChanges() {
+        List<Product> listOfProducts = productRepository.findAll();
+        assertEquals(2, listOfProducts.size());
+        Product actualProduct = productRepository.findById(searchedProduct.getId()).get();
+
+        actualProduct.setName("snowboard");
+        actualProduct.setPrice(5000);
+        productRepository.save(actualProduct);
+
+        assertEquals(2, listOfProducts.size());
+    }
+
+    @Test
+    @DisplayName("when Delete Product then Removed Product is Empty")
+    public void whenDeleteProduct_thenRemovedProduct_isEmpty() {
+        Product newProduct = Product.builder()
+                .id(3)
                 .name("board")
                 .price(9000)
                 .creationDate(LocalDateTime.now())
                 .build();
 
-       Product savedNewProduct = productRepository.save(newProduct);
+        Product savedNewProduct = productRepository.save(newProduct);
+
         productRepository.deleteById(savedNewProduct.getId());
         Optional<Product> deletedProduct = productRepository.findById(3);
 
