@@ -16,6 +16,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,5 +52,40 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.name")
                         .value(product.getName()));
     }
+
+
+    @Test
+    void findByiId() throws Exception {
+        Mockito.when(productService.findById(1))
+                .thenReturn(Optional.ofNullable(product));
+        mockMvc.perform(get("/products/1")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.price")
+                        .value(product.getPrice()));
+    }
+
+
+
+//    @Test
+//    void saveDepartment() throws Exception {
+//        Product    inputProduct = Product.builder()
+//                .name("TV")
+//                .price(3000)
+//                .creationDate(LocalDateTime.now())
+//                .build();
+//
+//  productService.add(inputProduct);
+//
+//        mockMvc.perform(post("/products/add")
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content("""
+//                                {
+//                                "name":"TV",
+//                                "price":"3000",
+//
+//                                }"""))
+//                .andExpect(status().isOk());
+//    }
 
 }
