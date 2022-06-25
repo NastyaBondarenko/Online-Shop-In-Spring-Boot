@@ -101,13 +101,6 @@ class ProductControllerTest {
     @Test
     @DisplayName("search Product")
     void searchProduct() throws Exception {
-        Product inputProduct = Product.builder()
-                .id(1)
-                .name("TV")
-                .price(3000)
-                .creationDate(LocalDateTime.now())
-                .build();
-
         productService.findProductByName("TV");
 
         mockMvc.perform(MockMvcRequestBuilders.get("/products/search/TV")
