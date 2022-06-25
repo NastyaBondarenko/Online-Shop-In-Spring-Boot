@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -38,11 +39,23 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(id);
     }
 //
-//    @Override
-//    public String update(Product product) {
-//        productRepository.update(product);
-//        return null;
-//    }
+    @Override
+    public Product update(int id,Product product) {
+        Product productDB = productRepository.findById(id).get();
+
+        if (Objects.nonNull(product.getName()) && !"".equalsIgnoreCase(product.getName())) {
+            productDB.setName(product.getName());
+        }
+
+        if (Objects.nonNull(product.getPrice())) {
+            productDB.setPrice(product.getPrice());
+        }
+
+        if (Objects.nonNull(product.getCreationDate())) {
+            productDB.setCreationDate(product.getCreationDate());
+        }
+        return productRepository.save(productDB);
+    }
 //
 //    @Override
 //    public List<Product> search(String searchText) {

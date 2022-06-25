@@ -9,12 +9,15 @@ public interface ProductService {
     List<Product> findAll();
 
     void add(Product product);
-//
+
+    //
     Optional<Product> findById(int id);
-//
+
+    //
     void delete(int id);
-//
-//    String update(Product product);
+
+    //
+    Product update(int id, Product product);
 //
 //    List<Product> search(String searchText);
 }

@@ -44,16 +44,17 @@ public class ProductController {
         logger.info("find product by id {}", id);
         return productService.findById(id);
     }
-//
-//    @PutMapping("/products/update")
-//    public void update(@RequestBody Product product) {
-//        logger.info("update {}", product);
-//        productServiceImpl.update(product);
-//    }
+
+    @PutMapping("/products/update/{id}")
+    public Product update(@PathVariable("id") int id,
+                          @RequestBody Product product) {
+        return productService.update(id, product);
+    }
+}
 //
 //    @GetMapping("/products/search/{name}")
 //    public List<Product> search(@PathVariable("name") String searchText) {
 //        logger.info("search product {}", searchText);
 //        return productServiceImpl.search(searchText);
 //    }
-}
+
