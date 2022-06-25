@@ -38,9 +38,10 @@ public class ProductServiceImpl implements ProductService {
     public Optional<Product> findById(int id) {
         return productRepository.findById(id);
     }
-//
+
+    //
     @Override
-    public Product update(int id,Product product) {
+    public Product update(int id, Product product) {
         Product productDB = productRepository.findById(id).get();
 
         if (Objects.nonNull(product.getName()) && !"".equalsIgnoreCase(product.getName())) {
@@ -58,8 +59,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product findProductByName(String name) {
+    public List<Product> findProductByName(String name) {
+
         return productRepository.findProductByNameIgnoreCase(name);
+
     }
 //    @Override
 //    public Product search(String name) {

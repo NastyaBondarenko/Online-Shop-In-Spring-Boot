@@ -52,10 +52,9 @@ public class ProductController {
     }
 
     @GetMapping("/products/search/{name}")
-public Product search(@PathVariable("name") String name){
+    public List<Product> search(@PathVariable("name") String name) {
         return productService.findProductByName(name);
     }
-
 
 
 }
