@@ -67,7 +67,7 @@ class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("add Product")
+    @DisplayName("update Product")
     void updateProduct() throws Exception {
         Product inputProduct = Product.builder()
                 .id(1)
@@ -85,6 +85,16 @@ class ProductControllerTest {
                                 "name":"Snowboard",
                                 "price":"2000"
                                 }"""))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @DisplayName("delete Product")
+    void deleteProduct() throws Exception {
+        productService.delete(1);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/products/delete/1")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
