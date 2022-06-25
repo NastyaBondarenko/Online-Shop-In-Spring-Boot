@@ -34,6 +34,7 @@ class ProductRepositoryTest {
     public void whenFindById_thenReturn() {
         Product product = productRepository.findById(1).get();
         assertEquals(product.getName(), "TV");
+        assertEquals(product.getPrice(), 3000);
     }
 
 }
