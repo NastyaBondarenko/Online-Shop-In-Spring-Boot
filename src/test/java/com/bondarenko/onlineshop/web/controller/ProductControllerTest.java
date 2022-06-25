@@ -76,7 +76,7 @@ class ProductControllerTest {
                 .creationDate(LocalDateTime.now())
                 .build();
 
-        productService.update(1,inputProduct);
+        productService.update(1, inputProduct);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/products/update/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -89,10 +89,22 @@ class ProductControllerTest {
     }
 
     @Test
+    @DisplayName("find Product By Id ")
+    void findById() throws Exception {
+        productService.findById(1);
+        mockMvc.perform(MockMvcRequestBuilders.get("/products/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+
+
+
+    @Test
     @DisplayName("delete Product")
     void deleteProduct() throws Exception {
         productService.delete(1);
-
         mockMvc.perform(MockMvcRequestBuilders.delete("/products/delete/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk());
@@ -112,14 +124,13 @@ class ProductControllerTest {
                         .value(product.getPrice()));
     }
 
-    @Test
-    @DisplayName("when Find Product By Id then Searched Product Return ")
-    void whenFindById_thenSearchedPro8duct_Return() throws Exception {
-        productService.delete(1);
-        mockMvc.perform(delete("/products/delete/1")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-        assertNull(product);
 
-    }
+
+
+
+
+
+
+
+
 }
