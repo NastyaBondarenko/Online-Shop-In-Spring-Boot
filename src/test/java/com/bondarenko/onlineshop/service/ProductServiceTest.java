@@ -48,12 +48,6 @@ class ProductServiceTest {
 
     }
 
-    @Test
-    @DisplayName("when Save Product then Correct Product Parameters Return")
-    public void whenSaveProduct_thenCorrectProductParametersReturn() {
-        assertEquals("TV", savedProduct.getName());
-        assertEquals(3000, savedProduct.getPrice());
-    }
 
     @Test
     @DisplayName("when Save Product then Saved Product is Not Null")
@@ -64,16 +58,16 @@ class ProductServiceTest {
         assertNotNull(savedProduct.getId());
     }
 
-    @DisplayName("when FindAll then Correct Quantity Of ProductsReturn")
     @Test
-    public void whenFindAll_thenCorrectQuantityOfProducts_Return() {
+    @DisplayName("when FindAll then Correct Quantity Of ProductsReturn")
+    public void whenFindAll_thenCorrectQuantityOfProductsReturn() {
         List<Product> productList = productRepository.findAll();
         assertEquals(2, productList.size());
     }
 
     @Test
-    @DisplayName("when FindAll then All Elements Contains Of List")
-    public void whenFindAll_thenAllElementsContainsOfList() {
+    @DisplayName("given Saved Products when Find All then List Of Products Contains Elements")
+    public void givenSavedProducts_whenFindAll_thenListOfProductsContainsElements() {
         List<Product> productList = productRepository.findAll();
 
         assertNotNull(productList);
@@ -82,7 +76,7 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("when FindById Existing Product then Searched Product is Not Null")
+    @DisplayName("when Find By Id Existing Product then Searched Product is Not Null")
     public void whenFindById_ExistingProduct_thenSearchedProduct_isNotNull() {
 
         Optional<Product> existingProduct = productRepository.findById(1);
@@ -90,14 +84,14 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("when FindById Not Existing Product then Searched Product is Empty")
+    @DisplayName("when Find By Id Not Existing Product then Searched Product is Empty")
     public void whenFindById_NotExistingProduct_thenSearchedProduct_isEmpty() {
         Optional<Product> notExistingProduct = productRepository.findById(101);
         assertThat(notExistingProduct).isEmpty();
     }
 
     @Test
-    @DisplayName("when Update Product then Return Updated Product")
+    @DisplayName("when Update Product then Updated Product Return")
     public void whenUpdateProduct_thenUpdatedProductReturn() {
         Product actualProduct = productRepository.findById(searchedProduct.getId()).get();
 
@@ -126,7 +120,7 @@ class ProductServiceTest {
 
     @Test
     @DisplayName("when Delete Product then Removed Product is Empty")
-    public void whenDeleteProduct_thenRemovedProduct_isEmpty() {
+    public void whenDeleteProduct_thenRemovedProductIsEmpty() {
         Product newProduct = Product.builder()
                 .id(3)
                 .name("board")
@@ -143,8 +137,8 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("when Search Product By Name then Quantity Of Searched Products Correct")
-    public void whenSearchProductsByName_thenQuantityOfSearchedProductsCorrect() {
+    @DisplayName("when Search Product By Name then Quantity Of Searched Products Is Correct")
+    public void whenSearchProductsByName_thenQuantityOfSearchedProducts_isCorrect() {
 
         List<Product> listOfSearchedProducts = productRepository.findProductByNameIgnoreCase("TV");
 
@@ -152,15 +146,15 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("when Search Products By Name then Appropriate Product Return")
-    public void whenSearchProductsByName_thenAppropriateProductReturn() {
+    @DisplayName("when Search Product By Name then Appropriate Product Return")
+    public void whenSearchProductByName_thenAppropriateProductReturn() {
 
         List<Product> listOfSearchedProducts = productRepository.findProductByNameIgnoreCase("TV");
 
-        assertEquals("TV",savedProduct.getName());
+        assertEquals("TV", savedProduct.getName());
         assertTrue(listOfSearchedProducts.contains(savedProduct));
 
-        assertEquals("TV",searchedProduct.getName());
+        assertEquals("TV", searchedProduct.getName());
         assertTrue(listOfSearchedProducts.contains(searchedProduct));
     }
 
@@ -169,9 +163,13 @@ class ProductServiceTest {
     public void whenSearchByName_NotExistingProduct_thenListOfSearchedProducts_isEmpty() {
 
         List<Product> listOfSearchedProducts = productRepository.findProductByNameIgnoreCase("boll");
-
         listOfSearchedProducts.isEmpty();
     }
 
-
+    @Test
+    @DisplayName("when Save Product then Correct Product Fields Return")
+    public void whenSaveProduct_thenCorrectProductFieldsReturn() {
+        assertEquals("TV", savedProduct.getName());
+        assertEquals(3000, savedProduct.getPrice());
+    }
 }
