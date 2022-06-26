@@ -44,10 +44,7 @@ class ProductServiceTest {
 
         savedProduct = productRepository.save(product);
         searchedProduct = productRepository.save(searchedProduct);
-
-
     }
-
 
     @Test
     @DisplayName("when Save Product then Saved Product is Not Null")
