@@ -2,6 +2,7 @@ package com.bondarenko.onlineshop.web.controller;
 
 import com.bondarenko.onlineshop.entity.Product;
 import com.bondarenko.onlineshop.service.ProductService;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -279,5 +280,15 @@ class ProductControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/products/delete/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isMethodNotAllowed());
+    }
+
+    @Test
+    @DisplayName("when Add Product with Empty Url then IllegalArgumentException Return")
+    void whenAddProduct_withEmptyUrl_thenIllegalArgumentExceptionReturn() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            mockMvc.perform(MockMvcRequestBuilders.get(null)
+                            .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(MockMvcResultMatchers.status().isOk());
+        });
     }
 }
