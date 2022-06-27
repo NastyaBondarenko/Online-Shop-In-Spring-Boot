@@ -1,6 +1,7 @@
 package com.bondarenko.onlineshop.service;
 
 import com.bondarenko.onlineshop.entity.Product;
+import com.bondarenko.onlineshop.exceptions.ProductNotFoundExceptions;
 import com.bondarenko.onlineshop.repositary.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +34,15 @@ public class ProductServiceImpl implements ProductService {
         productRepository.deleteById(id);
     }
 
-
     @Override
-    public Optional<Product> findById(int id) {
+    public Optional<Product> findById(int id) throws ProductNotFoundExceptions {
+        Optional<Product> product = productRepository.findById(id);
+        if (!product.isPresent()) {
+            throw new ProductNotFoundExceptions("Product is not Available");
+        }
         return productRepository.findById(id);
     }
 
-    //
     @Override
     public Product update(int id, Product product) {
         Product productDB = productRepository.findById(id).get();
@@ -48,9 +51,7 @@ public class ProductServiceImpl implements ProductService {
             productDB.setName(product.getName());
         }
 
-        if (Objects.nonNull(product.getPrice())) {
-            productDB.setPrice(product.getPrice());
-        }
+        productDB.setPrice(product.getPrice());
 
         if (Objects.nonNull(product.getCreationDate())) {
             productDB.setCreationDate(product.getCreationDate());
@@ -60,12 +61,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> findProductByName(String name) {
-
         return productRepository.findProductByNameIgnoreCase(name);
-
     }
-//    @Override
-//    public Product search(String name) {
-//        return productRepository.findByProductName(name);
-//    }
 }
