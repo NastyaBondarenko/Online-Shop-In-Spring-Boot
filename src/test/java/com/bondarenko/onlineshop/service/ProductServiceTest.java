@@ -2,14 +2,17 @@ package com.bondarenko.onlineshop.service;
 
 import com.bondarenko.onlineshop.entity.Product;
 import com.bondarenko.onlineshop.repositary.ProductRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,8 +66,8 @@ class ProductServiceTest {
     }
 
     @Test
-    @DisplayName("given Saved Products when Find All then List Of Products Contains Elements")
-    public void givenSavedProducts_whenFindAll_thenListOfProductsContainsElements() {
+    @DisplayName("given Saved Products when Find All then List Of Products Return")
+    public void givenSavedProducts_whenFindAll_thenListOfProductsReturn() {
         List<Product> productList = productRepository.findAll();
 
         assertNotNull(productList);
@@ -168,5 +171,23 @@ class ProductServiceTest {
     public void whenSaveProduct_thenCorrectProductFieldsReturn() {
         assertEquals("TV", savedProduct.getName());
         assertEquals(3000, savedProduct.getPrice());
+    }
+
+    @Test
+    @DisplayName("when Find By Id Not Existing Product then No Such Element Exception Return")
+    public void whenFindByIdNotExistingProduct_thenNoSuchElementExceptionReturn() {
+        Assertions.assertThrows(NoSuchElementException.class, () -> {
+            Product product = productRepository.findById(5).get();
+            assertEquals(product.getName(), "TV");
+            assertEquals(product.getPrice(), 10000);
+        });
+    }
+
+    @Test
+    @DisplayName("when Find By Null Id then InvalidDataAccessApiUsageException Return")
+    public void whenFindByNullId_thenInvalidDataAccessApiUsageExceptionReturn() {
+        Assertions.assertThrows(InvalidDataAccessApiUsageException.class, () -> {
+            productRepository.findById(null).get();
+        });
     }
 }
