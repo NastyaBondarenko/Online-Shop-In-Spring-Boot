@@ -1,6 +1,7 @@
 package com.bondarenko.onlineshop.web.controller;
 
 import com.bondarenko.onlineshop.entity.Product;
+import com.bondarenko.onlineshop.exceptions.ProductNotFoundExceptions;
 import com.bondarenko.onlineshop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class ProductController {
     }
 
     @GetMapping("/products/{id}")
-    public Optional<Product> findById(@PathVariable("id") int id) {
+    public Optional<Product> findById(@PathVariable("id") int id) throws ProductNotFoundExceptions {
         logger.info("find product by id {}", id);
         return productService.findById(id);
     }
@@ -48,34 +49,13 @@ public class ProductController {
     @PutMapping("/products/update/{id}")
     public Product update(@PathVariable("id") int id,
                           @RequestBody Product product) {
+        logger.info("update product by id {}", id);
         return productService.update(id, product);
     }
 
     @GetMapping("/products/search/{name}")
-    public List<Product> search(@PathVariable("name") String name) {
-        return productService.findProductByName(name);
+    public List<Product> search(@PathVariable("name") String searchText) {
+        logger.info("search product {}", searchText);
+        return productService.findProductByName(searchText);
     }
-
-
 }
-
-//    @GetMapping("/products/search/{name}")
-//    public Product search(@PathVariable("name") String searchText) {
-//        return productService.search(searchText);
-//    }
-
-
-//    @GetMapping("/products/search/{name}")
-//    public List<Product> search(@PathVariable("name") String searchText) {
-//        logger.info("search product {}", searchText);
-//        return productService.search(searchText);
-//    }
-
-
-//
-//    @GetMapping("/products/search/{name}")
-//    public List<Product> search(@PathVariable("name") String searchText) {
-//        logger.info("search product {}", searchText);
-//        return productServiceImpl.search(searchText);
-//    }
-
