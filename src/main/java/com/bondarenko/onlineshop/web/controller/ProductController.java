@@ -56,6 +56,6 @@ public class ProductController {
     @GetMapping("/products/search/{name}")
     public List<Product> search(@PathVariable("name") String searchText) {
         logger.info("search product {}", searchText);
-        return productService.findProductByName(searchText);
+        return productService.search(searchText);
     }
 }
