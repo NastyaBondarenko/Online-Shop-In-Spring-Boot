@@ -1,193 +1,130 @@
 package com.bondarenko.onlineshop.service;
 
 import com.bondarenko.onlineshop.entity.Product;
+import com.bondarenko.onlineshop.exceptions.ProductNotFoundExceptions;
 import com.bondarenko.onlineshop.repositary.ProductRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
-@DataJpaTest
+@RunWith(SpringRunner.class)
+@SpringBootTest
 class ProductServiceTest {
-
-    @Autowired
+    @MockBean
     private ProductRepository productRepository;
 
-    private Product product;
-    private Product savedProduct;
-    private Product searchedProduct;
+    @Autowired
+    private ProductService productService;
+
+    private Product firstProduct;
+    private Product secondProduct;
 
     @BeforeEach
     void setUp() {
-        Product product =
-                Product.builder()
-                        .id(1)
-                        .name("TV")
-                        .price(3000)
-                        .creationDate(LocalDateTime.now())
-                        .build();
-
-        searchedProduct = Product.builder()
-                .id(2)
+        firstProduct = Product.builder()
                 .name("TV")
-                .price(10000)
-                .creationDate(LocalDateTime.now())
+                .price(100)
+                .creationDate(LocalDateTime.MIN)
+                .id(1)
                 .build();
 
-        savedProduct = productRepository.save(product);
-        searchedProduct = productRepository.save(searchedProduct);
+        secondProduct = Product.builder()
+                .name("snowboard")
+                .price(100)
+                .creationDate(LocalDateTime.MIN)
+                .id(1)
+                .build();
     }
 
     @Test
-    @DisplayName("when Save Product then Saved Product is Not Null")
-    public void whenSaveProduct_thenSavedProductIsNotNull() {
-        assertNotNull(savedProduct);
-        assertNotNull(savedProduct.getName());
-        assertNotNull(savedProduct.getPrice());
-        assertNotNull(savedProduct.getId());
+    @DisplayName("when Find All then Correct Data Return")
+    public void whenFindAll_thenCorrectDataReturn() {
+        List<Product> productList = Arrays.asList(firstProduct, secondProduct);
+        given(this.productRepository.findAll())
+                .willReturn(productList);
+
+        Product actualProduct = productService.findAll().get(0);
+
+        assertEquals(firstProduct, actualProduct);
+        assertEquals("TV", actualProduct.getName());
+        assertEquals(100, actualProduct.getPrice());
     }
 
     @Test
-    @DisplayName("when FindAll then Correct Quantity Of ProductsReturn")
+    @DisplayName("when Find All then Correct Quantity Of Products Return")
     public void whenFindAll_thenCorrectQuantityOfProductsReturn() {
-        List<Product> productList = productRepository.findAll();
-        assertEquals(2, productList.size());
+        List<Product> productList = Arrays.asList(firstProduct, secondProduct);
+        given(this.productRepository.findAll())
+                .willReturn(productList);
+
+        int actualSize = productService.findAll().size();
+        assertEquals(2, actualSize);
     }
 
     @Test
-    @DisplayName("given Saved Products when Find All then List Of Products Return")
-    public void givenSavedProducts_whenFindAll_thenListOfProductsReturn() {
-        List<Product> productList = productRepository.findAll();
+    @DisplayName("when Find By Id then Correct Product Return")
+    public void whenFindById_thenCorrectProductReturn() throws ProductNotFoundExceptions {
+        given(this.productRepository.findById(1))
+                .willReturn(Optional.ofNullable(secondProduct));
 
-        assertNotNull(productList);
-        assertTrue(productList.contains(savedProduct));
-        assertTrue(productList.contains(searchedProduct));
+        Product searchedProduct = productService.findById(1).get();
+
+        assertEquals("snowboard", searchedProduct.getName());
+        assertEquals(100, searchedProduct.getPrice());
     }
 
     @Test
-    @DisplayName("when Find By Id Existing Product then Searched Product is Not Null")
-    public void whenFindById_ExistingProduct_thenSearchedProduct_isNotNull() {
+    @DisplayName("when Find By Name then Correct Name Of Product Return")
+    public void whenFindByName_thenCorrectNameOfProductReturn() {
+        given(this.productRepository.findProductByNameIgnoreCase("TV"))
+                .willReturn(List.of(firstProduct));
 
-        Optional<Product> existingProduct = productRepository.findById(1);
-        assertNotNull(existingProduct);
+        Product actualProduct = productService.search("TV").get(0);
+
+        assertEquals("TV", actualProduct.getName());
     }
 
     @Test
-    @DisplayName("when Find By Id Not Existing Product then Searched Product is Empty")
-    public void whenFindById_NotExistingProduct_thenSearchedProduct_isEmpty() {
-        Optional<Product> notExistingProduct = productRepository.findById(101);
-        assertThat(notExistingProduct).isEmpty();
+    @DisplayName("when Find By Name With Ignore Case then Correct Name Of Product Return")
+    public void whenFindByNameWithIgnoreCase_thenCorrectNameOfProductReturn() {
+        given(this.productRepository.findProductByNameIgnoreCase("tv"))
+                .willReturn(List.of(firstProduct));
+
+        Product actualProduct = productService.search("tv").get(0);
+
+        assertEquals("TV", actualProduct.getName());
     }
 
     @Test
-    @DisplayName("when Update Product then Updated Product Return")
-    public void whenUpdateProduct_thenUpdatedProductReturn() {
-        Product actualProduct = productRepository.findById(searchedProduct.getId()).get();
+    @DisplayName("when Find All in Empty List then Then Size Of List isNull")
+    public void whenFindAllInEmptyList_thenThenSizeOfListIsNull() {
+        List<Product> productList = List.of();
+        given(this.productRepository.findAll())
+                .willReturn(productList);
 
-        actualProduct.setName("snowboard");
-        actualProduct.setPrice(5000);
-
-        Product updatedProduct = productRepository.save(actualProduct);
-
-        assertEquals(5000, updatedProduct.getPrice());
-        assertEquals("snowboard", updatedProduct.getName());
+        int actualSize = productService.findAll().size();
+        assertEquals(0, actualSize);
     }
 
     @Test
-    @DisplayName("when Update Product then Quantity Of Products Does Not Changes")
-    public void whenUpdateProduct_thenQuantityOfProducts_DoesNotChanges() {
-        List<Product> listOfProducts = productRepository.findAll();
-        assertEquals(2, listOfProducts.size());
-        Product actualProduct = productRepository.findById(searchedProduct.getId()).get();
+    @DisplayName("when Search then Find Product By Name Ignore Case Called")
+    public void whenSearch_thenFindProductByNameIgnoreCaseCalled() {
+        productService.search("TV");
 
-        actualProduct.setName("snowboard");
-        actualProduct.setPrice(5000);
-        productRepository.save(actualProduct);
-
-        assertEquals(2, listOfProducts.size());
-    }
-
-    @Test
-    @DisplayName("when Delete Product then Removed Product is Empty")
-    public void whenDeleteProduct_thenRemovedProductIsEmpty() {
-        Product newProduct = Product.builder()
-                .id(3)
-                .name("board")
-                .price(9000)
-                .creationDate(LocalDateTime.now())
-                .build();
-
-        Product savedNewProduct = productRepository.save(newProduct);
-
-        productRepository.deleteById(savedNewProduct.getId());
-        Optional<Product> deletedProduct = productRepository.findById(3);
-
-        assertThat(deletedProduct).isEmpty();
-    }
-
-    @Test
-    @DisplayName("when Search Product By Name then Quantity Of Searched Products Is Correct")
-    public void whenSearchProductsByName_thenQuantityOfSearchedProducts_isCorrect() {
-
-        List<Product> listOfSearchedProducts = productRepository.findProductByNameIgnoreCase("TV");
-
-        assertEquals(2, listOfSearchedProducts.size());
-    }
-
-    @Test
-    @DisplayName("when Search Product By Name then Appropriate Product Return")
-    public void whenSearchProductByName_thenAppropriateProductReturn() {
-
-        List<Product> listOfSearchedProducts = productRepository.findProductByNameIgnoreCase("TV");
-
-        assertEquals("TV", savedProduct.getName());
-        assertTrue(listOfSearchedProducts.contains(savedProduct));
-
-        assertEquals("TV", searchedProduct.getName());
-        assertTrue(listOfSearchedProducts.contains(searchedProduct));
-    }
-
-    @Test
-    @DisplayName("when Search By Name Not Existing Product then List Of Searched Products is Empty")
-    public void whenSearchByName_NotExistingProduct_thenListOfSearchedProducts_isEmpty() {
-
-        List<Product> listOfSearchedProducts = productRepository.findProductByNameIgnoreCase("boll");
-        listOfSearchedProducts.isEmpty();
-    }
-
-    @Test
-    @DisplayName("when Save Product then Correct Product Fields Return")
-    public void whenSaveProduct_thenCorrectProductFieldsReturn() {
-        assertEquals("TV", savedProduct.getName());
-        assertEquals(3000, savedProduct.getPrice());
-    }
-
-    @Test
-    @DisplayName("when Find By Id Not Existing Product then No Such Element Exception Return")
-    public void whenFindByIdNotExistingProduct_thenNoSuchElementExceptionReturn() {
-        Assertions.assertThrows(NoSuchElementException.class, () -> {
-            Product product = productRepository.findById(5).get();
-            assertEquals(product.getName(), "TV");
-            assertEquals(product.getPrice(), 10000);
-        });
-    }
-
-    @Test
-    @DisplayName("when Find By Null Id then InvalidDataAccessApiUsageException Return")
-    public void whenFindByNullId_thenInvalidDataAccessApiUsageExceptionReturn() {
-        Assertions.assertThrows(InvalidDataAccessApiUsageException.class, () -> {
-            productRepository.findById(null).get();
-        });
+        verify(productRepository).findProductByNameIgnoreCase("TV");
     }
 }
