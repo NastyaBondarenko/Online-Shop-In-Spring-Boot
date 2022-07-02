@@ -1,0 +1,5 @@
+PRODUCTS:
+  - ID: 1
+    NAME: "Snowboard"
+    PRICE: "7000.0"
+    CREATION_DATE: '2021-01-01 00:00:00.000000'
