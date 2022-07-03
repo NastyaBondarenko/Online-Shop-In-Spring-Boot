@@ -34,18 +34,10 @@ class ProductRepositoryTest {
 
     @Test
     @DataSet("products.yml")
-    @DisplayName("when Find All then Correct Product Return")
-    public void whenFindAll_thenCorrectProductReturn() {
-
-        String actualName = productRepository.findAll().get(0).getName();
-        double actualPrice = productRepository.findAll().get(0).getPrice();
-
-        LocalDateTime actualCreationDate = productRepository.findAll().get(0).getCreationDate();
-        LocalDateTime expectedCreationDate = Timestamp.valueOf("2021-01-01 00:00:00.000000").toLocalDateTime();
-
-        assertEquals("TV", actualName);
-        assertEquals(3000.0, actualPrice);
-        assertEquals(expectedCreationDate, actualCreationDate);
+    @ExpectedDataSet("products.yml")
+    @DisplayName("when FindBAll then Return Correct List Of Product")
+    public void whenFindAllThenReturnCorrectListOfProduct() {
+        productRepository.findAll();
     }
 
     @Test
@@ -141,12 +133,21 @@ class ProductRepositoryTest {
         assertEquals(expectedSizeOfProductList, actualSizeOfProductList);
     }
 
+
     @Test
     @DataSet("products.yml")
-    @ExpectedDataSet("products.yml")
-    @DisplayName("when FindBAll then Return Correct List Of Product")
-    public void whenFindAllThenReturnCorrectListOfProduct() {
-        productRepository.findAll();
+    @DisplayName("when Find All then Correct Product Return")
+    public void whenFindAll_thenCorrectProductReturn() {
+
+        String actualName = productRepository.findAll().get(0).getName();
+        double actualPrice = productRepository.findAll().get(0).getPrice();
+
+        LocalDateTime actualCreationDate = productRepository.findAll().get(0).getCreationDate();
+        LocalDateTime expectedCreationDate = Timestamp.valueOf("2021-01-01 00:00:00.000000").toLocalDateTime();
+
+        assertEquals("TV", actualName);
+        assertEquals(3000.0, actualPrice);
+        assertEquals(expectedCreationDate, actualCreationDate);
     }
 
     @Test
